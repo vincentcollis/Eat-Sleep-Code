@@ -1,6 +1,41 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+} from "firebase/auth";
+import { auth } from "../../../utils/firebase";
+import EatSleepCodeContext from "../../../utils/eatSleepCodeContext";
 
 const Login = () => {
+  const [, setUser] = useContext(EatSleepCodeContext);
+  const navigate = useNavigate();
+
+  const handleGoogleSignIn = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        setUser(result.user);
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Error signing in with Google:", error);
+      });
+  };
+
+  const handleGithubSignIn = () => {
+    const provider = new GithubAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        setUser(result.user);
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Error signing in with GitHub:", error);
+      });
+  };
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -33,8 +68,8 @@ const Login = () => {
               </div>
 
               <div className="mt-6 grid grid-cols-2 gap-4">
-                <a
-                  href="#"
+                <button
+                  onClick={handleGoogleSignIn}
                   className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent"
                 >
                   <svg
@@ -62,10 +97,10 @@ const Login = () => {
                   <span className="text-sm font-semibold leading-6">
                     Google
                   </span>
-                </a>
+                </button>
 
-                <a
-                  href="#"
+                <button
+                  onClick={handleGithubSignIn}
                   className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent"
                 >
                   <svg
@@ -83,7 +118,7 @@ const Login = () => {
                   <span className="text-sm font-semibold leading-6">
                     GitHub
                   </span>
-                </a>
+                </button>
               </div>
             </div>
           </div>
