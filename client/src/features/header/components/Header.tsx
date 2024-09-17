@@ -6,10 +6,10 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../../utils/firebase";
 import EatSleepCodeContext from "../../../utils/eatSleepCodeContext";
 
-// const navigation = [
-//   { name: "Leader Board", href: "/home/leaderboard" },
-//   { name: "My Board", href: "/home/myboard" },
-// ];
+const navigation = [
+  { name: "Leader Board", href: "/home/leaderboard" },
+  { name: "My Board", href: "/home/myboard" },
+];
 
 const Header = () => {
   const [user, setUser] = useContext(EatSleepCodeContext);
@@ -40,7 +40,7 @@ const Header = () => {
               className="h-8 w-auto"
             />
           </Link>
-          {/* <div className="hidden lg:flex lg:gap-x-12">
+          <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -50,7 +50,7 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
-          </div> */}
+          </div>
         </div>
         <div className="flex lg:hidden">
           <button
