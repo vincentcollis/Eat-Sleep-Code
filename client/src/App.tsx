@@ -8,6 +8,7 @@ import EatSleepCodeContext from "./utils/eatSleepCodeContext";
 import { auth } from "./utils/firebase";
 import AnonContainer from "./features/anontemplate/AnonContainer";
 import HomeContainer from "./features/home/HomeContainer";
+import BoardContainer from "./features/board/BoardContainer";
 
 const App = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -38,7 +39,7 @@ const App = () => {
             </Route>
             <Route path="" element={<HomeContainer />}>
               <Route path="/leaderboard" element={<div>Leader Board</div>} />
-              <Route path="/myboard" element={<div>My Board</div>} />
+              <Route path="/myboard" element={<BoardContainer/>} />
             </Route>
           </Routes>
         </EatSleepCodeContext.Provider>
