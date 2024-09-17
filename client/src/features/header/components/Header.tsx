@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../../../utils/firebase";
+import EatSleepCodeContext from "../../../utils/eatSleepCodeContext";
 
 const navigation = [
   { name: "Product", href: "#" },
@@ -11,7 +14,18 @@ const navigation = [
 ];
 
 const Header = () => {
+  const [user, setUser] = useContext(EatSleepCodeContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        setUser(null);
+      })
+      .catch((error) => {
+        console.error("Error signing out:", error);
+      });
+  };
 
   return (
     <header className="bg-white">
@@ -51,12 +65,21 @@ const Header = () => {
           </button>
         </div>
         <div className="hidden lg:flex">
-          <Link
-            to="/login"
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            Log in <span aria-hidden="true">&rarr;</span>
-          </Link>{" "}
+          {user && !user.isAnonymous ? (
+            <button
+              onClick={handleSignOut}
+              className="text-sm font-semibold leading-6 text-gray-900"
+            >
+              Log out
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="text-sm font-semibold leading-6 text-gray-900"
+            >
+              Log in <span aria-hidden="true">&rarr;</span>
+            </Link>
+          )}
         </div>
       </nav>
       <Dialog
