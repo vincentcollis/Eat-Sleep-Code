@@ -17,7 +17,7 @@ const Login = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         setUser(result.user);
-        navigate("/");
+        navigate("/home/myboard");
       })
       .catch((error) => {
         console.error("Error signing in with Google:", error);
@@ -29,7 +29,7 @@ const Login = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         setUser(result.user);
-        navigate("/");
+        navigate("/home/myboard");
       })
       .catch((error) => {
         console.error("Error signing in with GitHub:", error);

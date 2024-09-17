@@ -37,9 +37,13 @@ const App = () => {
               <Route index={true} path="/" element={<div>Landing Page</div>} />
               <Route path="/login" element={<LoginContainer />} />
             </Route>
-            <Route path="" element={<HomeContainer />}>
-              <Route path="/leaderboard" element={<div>Leader Board</div>} />
-              <Route path="/myboard" element={<BoardContainer/>} />
+            <Route path="/home" element={<HomeContainer />}>
+              <Route
+                path="/home/leaderboard"
+                element={<div>Leader Board</div>}
+              />
+              <Route path="/home/myboard" element={<BoardContainer />} />
+              <Route path="/home/settings" element={<div>Settings</div>} />
             </Route>
           </Routes>
         </EatSleepCodeContext.Provider>
