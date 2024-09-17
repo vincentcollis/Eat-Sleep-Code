@@ -7,6 +7,7 @@ import HeaderContainer from "./features/header/HeaderContainer";
 import EatSleepCodeContext from "./utils/eatSleepCodeContext";
 import { auth } from "./utils/firebase";
 import { SlashIcon } from "@heroicons/react/24/outline";
+import BoardContainer from "./features/board/BoardContainer";
 
 const App = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -33,6 +34,7 @@ const App = () => {
           <HeaderContainer />
           <Routes>
             <Route path="/login" element={<LoginContainer />} />
+            <Route path="/board" element={<BoardContainer />} />
           </Routes>
         </EatSleepCodeContext.Provider>
       </BrowserRouter>
