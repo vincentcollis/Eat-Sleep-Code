@@ -4,9 +4,9 @@
 		"useDefineForClassFields": true, // Uses ECMAScript-defined behavior for class field declarations, which aligns with the latest JavaScript class field syntax.
 
 		/* Adjust for Node.js */
-		"module": "CommonJS", // Specifies the module system to be used. In this case, CommonJS is used, which is the default in Node.js environments.
-		"lib": ["ES2020"], // Specifies the library files to include in the compilation. ES2020 includes modern JavaScript features. No need for DOM libraries in a Node.js environment.
-		"moduleResolution": "node", // Specifies how modules are resolved. "node" resolution mimics Node.js, which is required for backend development.
+		"module": "node16", // Specifies the module system to be used. In this case, CommonJS is used, which is the default in Node.js environments.
+		"lib": ["esnext", "dom"], // Specifies the library files to include in the compilation. ES2020 includes modern JavaScript features. No need for DOM libraries in a Node.js environment.
+		"moduleResolution": "node16", // Specifies how modules are resolved. "node" resolution mimics Node.js, which is required for backend development.
 		"noEmit": true, // Prevents the TypeScript compiler from generating output files (e.g., JavaScript). This is useful when you're using `ts-node` to execute TypeScript directly.
 		"moduleDetection": "auto", // Automatically detects whether a file should be treated as an ES module or CommonJS based on the presence of `import` or `require` statements.
 

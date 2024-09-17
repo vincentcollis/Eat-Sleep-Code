@@ -1,9 +1,11 @@
 interface DatabaseController {
-	getAllQuestions: Function;
+	getAllQuestions: () => void;
 }
 
-const databaseController: DatabaseController = {};
-
-databaseController.getAllQuestions = () => {};
+const databaseController: DatabaseController = {
+	getAllQuestions: () => {
+		console.log('getAllQuestions');
+	},
+};
 
 export default databaseController;

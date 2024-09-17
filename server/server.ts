@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(cors());
 
 // API Router Handler
-app.use('/api/questions', databaseRouter);
+app.use('/api/database', databaseRouter);
 
 // API Router Handler
 app.use('/api', apiRouter);
