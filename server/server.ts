@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-
+import apiRouter from './routes/apiRouter.js';
 import cors from 'cors';
 
 const app = express();
@@ -8,10 +8,8 @@ const PORT = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cors());
 
-console.log(process.env.TESTING);
-
 // API Router Handler
-app.use('/api');
+app.use('/api', apiRouter);
 
 // Standard 404 Route Handler
 app.use('/', (_req, res) => {
