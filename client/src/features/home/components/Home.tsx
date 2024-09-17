@@ -27,14 +27,21 @@ import {
   ChevronDownIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
+import { signOut } from "firebase/auth";
+import { auth } from "../../../utils/firebase";
 
 const navigation = [
-  { name: "Leader Board", href: "/leaderboard", icon: HomeIcon, current: true },
-  { name: "My Board", href: "/myboard", icon: UsersIcon, current: false },
+  {
+    name: "Leader Board",
+    href: "/home/leaderboard",
+    icon: HomeIcon,
+    current: true,
+  },
+  { name: "My Board", href: "/home/myboard", icon: UsersIcon, current: false },
 ];
 const userNavigation = [
   { name: "Your profile", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Sign out", href: "/settings" },
 ];
 
 function classNames(...classes) {
@@ -44,6 +51,16 @@ function classNames(...classes) {
 const Home = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useContext(EatSleepCodeContext);
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        setUser(null);
+      })
+      .catch((error) => {
+        console.error("Error signing out:", error);
+      });
+  };
 
   if (user && !user.isAnonymous) {
     return (
@@ -82,11 +99,13 @@ const Home = () => {
                 {/* Sidebar component, swap this element with another sidebar if you like */}
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                   <div className="flex h-16 shrink-0 items-center">
-                    <img
-                      alt="Your Company"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                      className="h-8 w-auto"
-                    />
+                    <Link to="/">
+                      <img
+                        alt="Your Company"
+                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                        className="h-8 w-auto"
+                      />
+                    </Link>
                   </div>
                   <nav className="flex flex-1 flex-col">
                     <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -119,8 +138,8 @@ const Home = () => {
                         </ul>
                       </li>
                       <li className="mt-auto">
-                        <a
-                          href="#"
+                        <Link
+                          to="/home/settings"
                           className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
                         >
                           <Cog6ToothIcon
@@ -128,7 +147,7 @@ const Home = () => {
                             className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
                           />
                           Settings
-                        </a>
+                        </Link>
                       </li>
                     </ul>
                   </nav>
@@ -142,11 +161,13 @@ const Home = () => {
             {/* Sidebar component, swap this element with another sidebar if you like */}
             <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
               <div className="flex h-16 shrink-0 items-center">
-                <img
-                  alt="Your Company"
-                  src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                  className="h-8 w-auto"
-                />
+                <Link to="/">
+                  <img
+                    alt="Your Company"
+                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                    className="h-8 w-auto"
+                  />
+                </Link>
               </div>
               <nav className="flex flex-1 flex-col">
                 <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -230,14 +251,6 @@ const Home = () => {
                   />
                 </form>
                 <div className="flex items-center gap-x-4 lg:gap-x-6">
-                  <button
-                    type="button"
-                    className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
-                  >
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon aria-hidden="true" className="h-6 w-6" />
-                  </button>
-
                   {/* Separator */}
                   <div
                     aria-hidden="true"
@@ -248,17 +261,12 @@ const Home = () => {
                   <Menu as="div" className="relative">
                     <MenuButton className="-m-1.5 flex items-center p-1.5">
                       <span className="sr-only">Open user menu</span>
-                      <img
-                        alt=""
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        className="h-8 w-8 rounded-full bg-gray-50"
-                      />
                       <span className="hidden lg:flex lg:items-center">
                         <span
                           aria-hidden="true"
                           className="ml-4 text-sm font-semibold leading-6 text-gray-900"
                         >
-                          Tom Cook
+                          {user.displayName}
                         </span>
                         <ChevronDownIcon
                           aria-hidden="true"
@@ -270,16 +278,14 @@ const Home = () => {
                       transition
                       className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                     >
-                      {userNavigation.map((item) => (
-                        <MenuItem key={item.name}>
-                          <a
-                            href={item.href}
-                            className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
-                          >
-                            {item.name}
-                          </a>
-                        </MenuItem>
-                      ))}
+                      <MenuItem>
+                        <button
+                          onClick={handleSignOut}
+                          className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                        >
+                          Sign out
+                        </button>
+                      </MenuItem>
                     </MenuItems>
                   </Menu>
                 </div>
