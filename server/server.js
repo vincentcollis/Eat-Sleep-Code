@@ -1,10 +1,13 @@
 import express from 'express';
 import apiRouter from './routes/apiRouter.js';
+import databaseRouter from './routes/databaseRouter.js';
 import cors from 'cors';
 const app = express();
 const PORT = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cors());
+// API Router Handler
+app.use('/api/database', databaseRouter);
 // API Router Handler
 app.use('/api', apiRouter);
 // Standard 404 Route Handler
