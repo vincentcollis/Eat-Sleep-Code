@@ -71,37 +71,6 @@ export default function BoardContainer() {
   //     return <div className="text-red-500">Error fetching data</div>;
   // }
 
-  useEffect(() => {
-    const data = { test: `Hello world` };
-
-    async function test() {
-      const token = await getAuthToken();
-      //   console.log(to)
-      const response = await fetch(
-        "http://localhost:3000/api/user/add_ProblemToBoard",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(data),
-        },
-      );
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log(result);
-        return;
-      } else {
-        console.error("Failed to make request");
-        return;
-      }
-    }
-
-    test();
-  }, []);
-
   return (
     <div className="container px-4 sm:px-6 lg:px-8 mx-auto max-w-4x1">
       <div className="sm:flex sm:items-center">
