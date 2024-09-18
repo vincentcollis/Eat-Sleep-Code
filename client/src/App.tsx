@@ -10,6 +10,8 @@ import AnonContainer from "./features/anontemplate/AnonContainer";
 import HomeContainer from "./features/home/HomeContainer";
 import BoardContainer from "./features/board/BoardContainer";
 import LeaderBoardContainer from "./features/leader-board/LeaderBoardContainer";
+import LandingContainer from "./features/landing/LandingContainer";
+import SettingsContainer from "./features/settings/SettingsContainer";
 
 const App = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -35,7 +37,7 @@ const App = () => {
         <EatSleepCodeContext.Provider value={[user, setUser]}>
           <Routes>
             <Route path="/" element={<AnonContainer />}>
-              <Route index={true} path="/" element={<div>Landing Page</div>} />
+              <Route index={true} path="/" element={<LandingContainer />} />
               <Route path="/login" element={<LoginContainer />} />
             </Route>
             <Route path="/home" element={<HomeContainer />}>
@@ -44,7 +46,7 @@ const App = () => {
                 element={<LeaderBoardContainer />}
               />
               <Route path="/home/myboard" element={<BoardContainer />} />
-              <Route path="/home/settings" element={<div>Settings</div>} />
+              <Route path="/home/settings" element={<SettingsContainer />} />
             </Route>
           </Routes>
         </EatSleepCodeContext.Provider>
