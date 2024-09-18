@@ -93,7 +93,7 @@ const Home = () => {
                     <Link to="/">
                       <img
                         alt="Your Company"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                        src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=600"
                         className="h-8 w-auto"
                       />
                     </Link>
@@ -108,8 +108,8 @@ const Home = () => {
                                 to={item.href}
                                 className={classNames(
                                   item.current
-                                    ? "bg-gray-50 text-indigo-600"
-                                    : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                                    ? "bg-gray-50 text-blue-600"
+                                    : "text-gray-700 hover:bg-gray-50 hover:text-blue-600",
                                   "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
                                 )}
                               >
@@ -117,8 +117,8 @@ const Home = () => {
                                   aria-hidden="true"
                                   className={classNames(
                                     item.current
-                                      ? "text-indigo-600"
-                                      : "text-gray-400 group-hover:text-indigo-600",
+                                      ? "text-blue-600"
+                                      : "text-gray-400 group-hover:text-blue-600",
                                     "h-6 w-6 shrink-0",
                                   )}
                                 />
@@ -131,11 +131,11 @@ const Home = () => {
                       <li className="mt-auto">
                         <Link
                           to="/home/settings"
-                          className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+                          className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-blue-600"
                         >
                           <Cog6ToothIcon
                             aria-hidden="true"
-                            className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
+                            className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-blue-600"
                           />
                           Settings
                         </Link>
@@ -155,7 +155,7 @@ const Home = () => {
                 <Link to="/">
                   <img
                     alt="Your Company"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                    src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=600"
                     className="h-8 w-auto"
                   />
                 </Link>
@@ -170,8 +170,8 @@ const Home = () => {
                             to={item.href}
                             className={classNames(
                               item.current
-                                ? "bg-gray-50 text-indigo-600"
-                                : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                                ? "bg-gray-50 text-blue-600"
+                                : "text-gray-700 hover:bg-gray-50 hover:text-blue-600",
                               "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
                             )}
                           >
@@ -179,8 +179,8 @@ const Home = () => {
                               aria-hidden="true"
                               className={classNames(
                                 item.current
-                                  ? "text-indigo-600"
-                                  : "text-gray-400 group-hover:text-indigo-600",
+                                  ? "text-blue-600"
+                                  : "text-gray-400 group-hover:text-blue-600",
                                 "h-6 w-6 shrink-0",
                               )}
                             />
@@ -193,11 +193,11 @@ const Home = () => {
                   <li className="mt-auto">
                     <Link
                       to="/home/settings"
-                      className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+                      className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-blue-600"
                     >
                       <Cog6ToothIcon
                         aria-hidden="true"
-                        className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
+                        className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-blue-600"
                       />
                       Settings
                     </Link>
