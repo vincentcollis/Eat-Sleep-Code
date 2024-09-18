@@ -31,7 +31,7 @@ const features = [
     image: screenshotRecent,
   },
   {
-    title: "Other Cool Feature",
+    title: "Cool Feature",
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
     image: screenshotTracking,
