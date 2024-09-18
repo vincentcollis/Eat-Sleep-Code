@@ -23,7 +23,7 @@ const App = () => {
           console.error("Error signing in anonymously:", error);
         });
       }
-      console.log(currentUser);
+      // console.log(currentUser);
     });
 
     return () => unsubscribe();
