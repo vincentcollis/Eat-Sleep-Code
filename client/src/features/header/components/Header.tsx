@@ -33,7 +33,7 @@ const Header = () => {
     <header className="bg-white">
       <nav
         aria-label="Global"
-        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        className="mx-auto flex max-w-8xl items-center justify-between p-4 md:px-8"
       >
         <div className="flex items-center gap-x-12">
           <Link to="" className="-m-1.5 p-1.5">
@@ -45,7 +45,7 @@ const Header = () => {
             />
           </Link>
           {user && !user.isAnonymous ? (
-            <div className="hidden lg:flex lg:gap-x-12">
+            <div className="hidden md:flex md:gap-x-12">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
@@ -58,7 +58,7 @@ const Header = () => {
             </div>
           ) : null}
         </div>
-        <div className="flex lg:hidden">
+        <div className="flex md:hidden">
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
@@ -68,12 +68,12 @@ const Header = () => {
             <Bars3Icon aria-hidden="true" className="h-6 w-6" />
           </button>
         </div>
-        <div className="hidden lg:flex">
+        <div className="hidden md:flex">
           {user && !user.isAnonymous ? (
             <Menu as="div" className="relative">
               <MenuButton className="-m-1.5 flex items-center p-1.5">
                 <span className="sr-only">Open user menu</span>
-                <span className="hidden lg:flex lg:items-center">
+                <span className="hidden md:flex md:items-center">
                   <span
                     aria-hidden="true"
                     className="ml-4 text-sm font-semibold leading-6 text-gray-900"
@@ -113,7 +113,7 @@ const Header = () => {
       <Dialog
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
-        className="lg:hidden"
+        className="md:hidden"
       >
         <div className="fixed inset-0 z-10" />
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
