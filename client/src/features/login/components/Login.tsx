@@ -8,15 +8,21 @@ import {
 import { auth } from "../../../utils/firebase";
 import EatSleepCodeContext from "../../../utils/eatSleepCodeContext";
 
+import { useTryLoginMutation } from "../LoginContainerApiSlice";
+
 const Login = () => {
   const [, setUser] = useContext(EatSleepCodeContext);
   const navigate = useNavigate();
 
-  const handleGoogleSignIn = () => {
+  const [tryLogin] = useTryLoginMutation();
+
+  const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
         setUser(result.user);
+        console.log("GOOGLE:", result.user.uid);
+        tryLogin({ oauth_id: result.user.uid });
         navigate("/home/myboard");
       })
       .catch((error) => {
@@ -24,11 +30,14 @@ const Login = () => {
       });
   };
 
-  const handleGithubSignIn = () => {
+  const handleGithubSignIn = async () => {
     const provider = new GithubAuthProvider();
+
     signInWithPopup(auth, provider)
       .then((result) => {
         setUser(result.user);
+        tryLogin({ oauth_id: result.user.uid });
+        console.log("GitHub:", result.user.uid);
         navigate("/home/myboard");
       })
       .catch((error) => {
@@ -42,7 +51,7 @@ const Login = () => {
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <img
             alt="Your Company"
-            src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=600"
+            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
             className="mx-auto h-10 w-auto"
           />
           <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">

@@ -3,95 +3,48 @@ import BoardRow from "./components/BoardRow";
 import AddBoardRowPopup from "./components/AddBoardRowPopup";
 import {
   useGetAllProblemsQuery,
+  useGetBoardDataQuery,
   useAddBoardRowMutation,
 } from "./BoardContainerApiSlice";
-import type { Row, LeetcodeProblem } from "./boardTypes";
+import type { LeetcodeProblem } from "./boardTypes";
 import type React from "react";
-// useGetBoardDataQuery,
-
-// *** Mock Data ***
-const currentDate = new Date();
-const rows: Row[] = [
-  {
-    user_id: 0,
-    problem_name: "Q0",
-    completed: false,
-    updated_at: currentDate,
-    created_at: currentDate,
-    number_of_times_completed: 0,
-    difficulty: "Easy",
-    type: "Algorithm",
-  },
-  {
-    user_id: 2,
-    problem_name: "Q2",
-    completed: true,
-    updated_at: currentDate,
-    created_at: currentDate,
-    number_of_times_completed: 2,
-    difficulty: "Easy",
-    type: "Algorithm",
-  },
-  {
-    user_id: 3,
-    problem_name: "Q3",
-    completed: true,
-    updated_at: currentDate,
-    created_at: currentDate,
-    number_of_times_completed: 3,
-    difficulty: "Medium",
-    type: "Algorithm",
-  },
-  {
-    user_id: 4,
-    problem_name: "Q4",
-    completed: true,
-    updated_at: currentDate,
-    created_at: currentDate,
-    number_of_times_completed: 4,
-    difficulty: "Hard",
-    type: "Algorithm",
-  },
-  {
-    user_id: 5,
-    problem_name: "Q5",
-    completed: true,
-    updated_at: currentDate,
-    created_at: currentDate,
-    number_of_times_completed: 5,
-    difficulty: "Medium",
-    type: "Algorithm",
-  },
-];
 
 // Renders a TailwindCSS table that contains BoardRow components
 export default function BoardContainer() {
-  // Pulls all problems from RTK Query
+  // ***** Pulls leetcode problems from RTK Query *****
   const { data: problems } = useGetAllProblemsQuery();
 
-  // Local state to track popup visibility
+  // ***** Local state to track popup visibility *****
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  // Function to toggle popup visibility
-  const togglePopup = () => setIsPopupOpen(!isPopupOpen);
-
-  // Local state to track the selected leetcode problem from dropdown
-  const [selectedProblem, setSelectedProblem] = useState("");
-
-  // Updates selected leetcode problem state inside form
-  const handleProblemSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedProblem(e.target.value);
+  // Toggle popup and resets input field if closed
+  const togglePopup = () => {
+    if (isPopupOpen) {
+      setSearchTerm("");
+      setSelectedProblem("");
+    }
+    setIsPopupOpen(!isPopupOpen);
   };
 
+  // ***** Local state to track the input field *****
+  const [searchTerm, setSearchTerm] = useState("");
+  // Handle search input changes
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+  // Filter problems based on the input field
+  const filteredProblems = problems?.filter((problem: LeetcodeProblem) =>
+    problem.title.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  // ***** Local state to track the selected leetcode problem from dropdown *****
+  const [selectedProblem, setSelectedProblem] = useState("");
   // RTK Query POST request for new leetcode question entries
   const [addBoardRow] = useAddBoardRowMutation();
-
   // Function that will post new leetcode problem entry for user
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    // Find the selected problem in the list of problems by title
+  const handleSubmit = async () => {
+    // Find the selected problem in the list of problems by its id
     const problem = problems?.find(
-      (p: LeetcodeProblem) => p.title === selectedProblem,
+      (p: LeetcodeProblem) => p.id === selectedProblem,
     );
 
     // If the problem does not exist, alert the user
@@ -99,31 +52,36 @@ export default function BoardContainer() {
       alert("Please select a valid problem.");
       return;
     }
-
-    // Attemps to send post request
+    // Attempts to send the post request
     try {
-      await addBoardRow({
-        problem_id: problem.id,
-      }).unwrap();
-
-      // Close the popup after successful submission
+      await addBoardRow({ problem_id: problem.id }).unwrap();
+      // Forces RTK Query to refetch user data
+      refetchRows();
+      // Close the popup after successful entry
       togglePopup();
     } catch (error) {
-      // Catches errors while posting
+      // Catches any errors while posting
       console.error("Error adding new problem:", error);
     }
   };
 
-  // const { data: rows, error, isLoading } = useGetBoardDataQuery();
+  const {
+    data: rows,
+    error: rowsError,
+    isLoading: rowsIsLoading,
+    refetch: refetchRows,
+  } = useGetBoardDataQuery();
+  console.log(rows);
 
-  // if (isLoading) {
-  //     return <div>Loading...</div>
-  // }
+  if (rowsIsLoading) {
+    return <div>Loading...</div>;
+  }
 
-  // if (error) {
-  //     return <div className="text-red-500">Error fetching data</div>;
-  // }
+  if (rowsError) {
+    return <div className="text-red-500">Error fetching data</div>;
+  }
 
+  // ***** Returned React Component *****
   return (
     <div className="container px-4 sm:px-6 lg:px-8 mx-auto max-w-4x1">
       <div className="sm:flex sm:items-center">
@@ -140,7 +98,7 @@ export default function BoardContainer() {
           <button
             type="button"
             onClick={togglePopup}
-            className="block rounded-md bg-blue-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             New Entry
           </button>
@@ -148,41 +106,67 @@ export default function BoardContainer() {
       </div>
 
       <AddBoardRowPopup isOpen={isPopupOpen} onClose={togglePopup}>
-        <h2 className="text-lg font-semibold mb-4">
+        <h2 className="text-lg font-semibold mb-4 flex justify-center">
           Select a Problem from LeetCode
         </h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Problem Name
-            </label>
-            <select
-              name="problem_name"
-              value={selectedProblem}
-              onChange={handleProblemSelect}
-              className="border border-gray-300 rounded-md px-4 py-2 w-full"
-              style={{ maxHeight: "150px", overflowY: "auto" }}
-            >
-              <option value="" disabled>
-                Select a problem
-              </option>
-              {problems?.map((problem) => (
-                <option key={problem.id} value={problem.title}>
-                  {problem.title}
-                </option>
-              ))}
-            </select>
-          </div>
 
-          <div className="flex justify-end w-full">
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md"
-            >
-              Add Problem
-            </button>
+        <div className="mb-4 w-full">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Search Problem
+          </label>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            placeholder="Search for a problem..."
+            className="border border-gray-300 rounded-md px-4 py-2 w-full"
+          />
+        </div>
+
+        {searchTerm && (
+          <div className="overflow-y-auto max-h-48">
+            <table className="min-w-full divide-y divide-gray-300">
+              <thead>
+                <tr>
+                  <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    Problem Name
+                  </th>
+                  <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    Difficulty
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {filteredProblems?.map((problem) => (
+                  <tr
+                    key={problem.id}
+                    onClick={() => setSelectedProblem(problem.id)} // Store problem.id instead of title
+                    className={`cursor-pointer hover:bg-gray-100 ${selectedProblem === problem.id ? "bg-blue-100" : ""}`}
+                  >
+                    <td className="px-3 py-4 text-sm text-gray-900">
+                      {problem.title}
+                    </td>
+                    <td className="px-3 py-4 text-sm text-gray-900">
+                      {problem.difficulty}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </form>
+        )}
+
+        {/* Submit Button */}
+        <div className="flex justify-end w-full mt-4">
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="bg-indigo-600 text-white px-4 py-2 rounded-md"
+          >
+            Add Problem
+          </button>
+        </div>
       </AddBoardRowPopup>
 
       <div className="mt-8 flow-root">
@@ -230,13 +214,6 @@ export default function BoardContainer() {
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Date Added
-                    <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible" />
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
                     Last Updated
                     <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible" />
                   </th>
@@ -244,8 +221,8 @@ export default function BoardContainer() {
               </thead>
 
               <tbody className="divide-y divide-gray-200 bg-white">
-                {rows?.map((row) => (
-                  <BoardRow key={row.problem_name} row={row} />
+                {rows?.problems?.map((row) => (
+                  <BoardRow key={row.id} row={row} />
                 ))}
               </tbody>
             </table>
