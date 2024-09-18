@@ -1,4 +1,4 @@
-import { Navigate, Outlet, Link } from "react-router-dom";
+import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
 import EatSleepCodeContext from "../../../utils/eatSleepCodeContext";
 import { useState, useContext } from "react";
 import {
@@ -25,16 +25,6 @@ import {
 import { signOut } from "firebase/auth";
 import { auth } from "../../../utils/firebase";
 
-const navigation = [
-  {
-    name: "Leader Board",
-    href: "/home/leaderboard",
-    icon: HomeIcon,
-    current: true,
-  },
-  { name: "My Board", href: "/home/myboard", icon: UsersIcon, current: false },
-];
-
 function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(" ");
 }
@@ -42,6 +32,24 @@ function classNames(...classes: string[]): string {
 const Home = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useContext(EatSleepCodeContext);
+  const location = useLocation();
+
+  console.log(location.pathname);
+
+  const navigation = [
+    {
+      name: "Leader Board",
+      href: "/home/leaderboard",
+      icon: HomeIcon,
+      current: location.pathname === "/home/leaderboard",
+    },
+    {
+      name: "My Board",
+      href: "/home/myboard",
+      icon: UsersIcon,
+      current: location.pathname === "/home/myboard",
+    },
+  ];
 
   const handleSignOut = () => {
     signOut(auth)
