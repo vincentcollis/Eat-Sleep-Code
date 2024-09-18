@@ -11,8 +11,6 @@ userRouter.post(
 	verifyToken,
 	userController.add_ProblemToBoard,
 	(req: Request, res: Response) => {
-		console.log('user controller: ', req.user);
-
 		res.status(200).send(res.locals.problems);
 	}
 );
