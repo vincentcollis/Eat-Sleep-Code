@@ -1,4 +1,3 @@
-import { Button } from "./Button";
 import { Container } from "./Container";
 import backgroundImage from "../../../images/background-faqs.jpg";
 
@@ -24,9 +23,6 @@ export function CallToAction() {
             It’s time to take control of your mastery of data structures and
             algorithms.
           </p>
-          <Button href="/login" color="white" className="mt-10">
-            Sign Up
-          </Button>
         </div>
       </Container>
     </section>
