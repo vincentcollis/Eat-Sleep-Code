@@ -13,8 +13,8 @@ export const boardApi = createApi({
         },
     }),
     endpoints: builder => ({
-        getBoardData: builder.query<Row[], void>({
-            query: () => "/board/data"
+        getBoardData: builder.query<Row, void>({
+            query: () => "/api/user/get_UserBoardProblems"
         }),
         getAllProblems: builder.query<LeetcodeProblem[], void>({
             query: () => "/api/database/all"
@@ -26,7 +26,14 @@ export const boardApi = createApi({
                 body: problem,
             })
         }),
+        changeCompletedStatus: builder.mutation<void, Partial<AddLeetcodeProblem>>({
+            query: (problem) => ({
+                url: "/api/user/update_SetProblemToComplete",
+                method: 'POST',
+                body: problem,
+            })
+        }),
     })
 });
 
-export const { useGetBoardDataQuery, useGetAllProblemsQuery, useAddBoardRowMutation } = boardApi;
+export const { useGetBoardDataQuery, useGetAllProblemsQuery, useAddBoardRowMutation, useChangeCompletedStatusMutation } = boardApi;
