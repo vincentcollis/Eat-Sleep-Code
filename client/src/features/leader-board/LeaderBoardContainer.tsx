@@ -1,9 +1,10 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useGetLeaderBoardDataQuery } from './LeaderBoardContainerAppSlice';
 import LeaderBoardRows from './components/LeaderBoardRows';
 import type { LeaderBoardRow } from './leaderBoardTypes';
 import { Pagination } from '@mui/material';
 
+// *** START OF MOCK DATA ***
 const vowels = ['a', 'e', 'i', 'o', 'u'];
 const mockDaily = [];
 for(let i = 0; i < 5; i++) {
@@ -41,13 +42,12 @@ for(let i = 0; i < 50; i++) {
     }
     mockAllTime.push(person);
 }
-
 const data = {
     dailyLeaderboard: mockDaily,
     weeklyLeaderboard: mockWeekly,
     allTimeLeaderboard: mockAllTime,
 }
-
+// *** END OF MOCK DATA ***
 
 
 const pageSize = 5; 
@@ -57,11 +57,7 @@ const LeaderBoardContainer: React.FC = () => {
     //daily, weekly, allTime
     const [timeFrame, setTimeFrame] = useState<string>('allTime')
     //pagination state
-    const [pagination, setPagination] = useState<number>({
-        count: 0,
-        from: 0,
-        to: pageSize
-    });
+    const [pagination, setPagination] = useState<number>(1);
 
     //could write as data: variableName to declare variable
     // const { data, error, isLoading  } = useGetLeaderBoardDataQuery();
