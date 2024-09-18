@@ -11,11 +11,7 @@ admin.initializeApp({
 });
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
-<<<<<<< HEAD
 	console.log('Hit verifyToken');
-
-=======
->>>>>>> e626170039a65cc11e74d2048455b70063601be7
 	const token = req.headers.authorization?.split(' ')[1];
 	if (!token) {
 		return res.status(401).json({ error: 'Unauthorized' });
