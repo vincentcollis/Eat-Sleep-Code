@@ -1,7 +1,17 @@
-import React from "react";
+import { CallToAction } from "./CallToAction";
+import { Hero } from "./Hero";
+import { PrimaryFeatures } from "./PrimaryFeatures";
 
 const Landing = () => {
-  return <div>Landing Page</div>;
+  return (
+    <>
+      <main>
+        <Hero />
+        <PrimaryFeatures />
+        <CallToAction />
+      </main>
+    </>
+  );
 };
 
 export default Landing;
