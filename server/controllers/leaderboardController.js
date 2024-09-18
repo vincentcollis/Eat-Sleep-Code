@@ -4,14 +4,14 @@ const leaderBoardController = {
     getMostCompletedDailyList: async (_req, res, next) => {
         try {
             const query = `
-        SELECT u.users_id, u.name, COUNT(up.id) as total_completions
-        FROM users_problems up
-        JOIN users u ON up.users_id = u.id
-        WHERE up.completed = true
-        AND up.updated_at::date = CURRENT_DATE
-        GROUP BY u.users_id, u.name
-        ORDER BY total_completions DESC;
-      `;
+      SELECT u.oauth_id, u.email, COUNT(up.id) AS total_completions
+      FROM users_problems up
+      JOIN users u ON up.oauth_id = u.oauth_id
+      WHERE up.completed = true
+      AND up.date_added::date = CURRENT_DATE
+      GROUP BY u.oauth_id, u.email
+      ORDER BY total_completions DESC;
+    `;
             const result = await pool.query(query);
             res.locals.dailyLeaderboard = result.rows;
             next();
@@ -22,18 +22,19 @@ const leaderBoardController = {
         }
     },
     // - Completed most weekly (Sunday - Saturday)
+    // - Completed most weekly (Sunday - Saturday)
     getMostCompletedWeeklyList: async (_req, res, next) => {
         try {
             const query = `
-        SELECT u.users_id, u.name, COUNT(up.id) as total_completions
-        FROM users_problems up
-        JOIN users u ON up.users_id = u.id
-        WHERE up.completed = true
-        AND up.updated_at >= date_trunc('week', CURRENT_DATE)
-        AND up.updated_at < date_trunc('week', CURRENT_DATE) + interval '1 week'
-        GROUP BY u.users_id, u.name
-        ORDER BY total_completions DESC;
-      `;
+      SELECT u.oauth_id, u.email, COUNT(up.id) AS total_completions
+      FROM users_problems up
+      JOIN users u ON up.oauth_id = u.oauth_id
+      WHERE up.completed = true
+      AND up.date_added >= date_trunc('week', CURRENT_DATE) - interval '1 day'
+      AND up.date_added < date_trunc('week', CURRENT_DATE) + interval '6 days'
+      GROUP BY u.oauth_id, u.email
+      ORDER BY total_completions DESC;
+    `;
             const result = await pool.query(query);
             res.locals.weeklyLeaderboard = result.rows;
             next();
@@ -47,13 +48,13 @@ const leaderBoardController = {
     getMostCompletedAllTimeList: async (_req, res, next) => {
         try {
             const query = `
-        SELECT u.users_id, u.name, COUNT(up.id) as total_completions
-        FROM users_problems up
-        JOIN users u ON up.users_id = u.id
-        WHERE up.completed = true
-        GROUP BY u.users_id, u.name
-        ORDER BY total_completions DESC;
-      `;
+      SELECT u.oauth_id, u.email, COUNT(up.id) AS total_completions
+      FROM users_problems up
+      JOIN users u ON up.oauth_id = u.oauth_id
+      WHERE up.completed = true
+      GROUP BY u.oauth_id, u.email
+      ORDER BY total_completions DESC;
+    `;
             const result = await pool.query(query);
             res.locals.allTimeLeaderboard = result.rows;
             next();
