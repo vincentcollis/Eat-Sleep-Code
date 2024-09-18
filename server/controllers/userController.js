@@ -22,9 +22,7 @@ const userController = {
             await client.query(query, [oauth_id, problem_id]); // Parameterized query to avoid SQL injection
             client.release(); // Release the client back to the pool
             // Respond with a success message or perform any other action
-            res
-                .status(201)
-                .json({ message: 'Problem added to user board successfully' });
+            res.status(201).json({ message: 'Problem added to user board successfully' });
         }
         catch (err) {
             console.error('Database query error', err);
@@ -65,6 +63,40 @@ const userController = {
             res.status(500).json({ error: "Failed to fetch user's board problems" });
         }
     },
+    get_UserBoardProblems: async (_req, res, next) => {
+        console.log('Fetching all problems on user\'s board');
+        // Extract oauth_id from res.locals.decodedToken
+        const oauth_id = res.locals.decodedToken.uid;
+        if (!oauth_id) {
+            res.status(400).json({ error: 'oauth_id is required' });
+            return;
+        }
+        const query = `
+  		SELECT p.id, p.title, p.title_slug, p.difficulty, p.topic_tags, 
+         up.completed, up.completed_at, up.date_added,
+         (SELECT COUNT(*) FROM users_problems WHERE problems_id = p.id AND oauth_id = $1 AND completed = true) AS times_completed
+			FROM users_problems up
+			JOIN problems p ON up.problems_id = p.id
+			WHERE up.oauth_id = $1
+			ORDER BY up.date_added DESC;
+		`;
+        try {
+            const client = await pool.connect(); // Get a client from the pool
+            const result = await client.query(query, [oauth_id]); // Parameterized query to avoid SQL injection
+            client.release(); // Release the client back to the pool
+            if (result.rows.length === 0) {
+                res.status(200).json({ message: 'No problems found on user\'s board' });
+                return;
+            }
+            // Respond with the list of problems on the user's board, including completion status and times_completed
+            res.status(200).json({ problems: result.rows });
+            next();
+        }
+        catch (err) {
+            console.error('Database query error', err);
+            res.status(500).json({ error: 'Failed to fetch user\'s board problems' });
+        }
+    },
     // Function to update the completion status to a problem on the users board
     update_SetProblemToComplete: async (req, res, _next) => {
         console.log('User is marking a problem as completed');
@@ -94,6 +126,8 @@ const userController = {
             res
                 .status(200)
                 .json({ message: 'Problem marked as completed successfully' });
+            // Respond with a success message
+            res.status(200).json({ message: 'Problem marked as completed successfully' });
         }
         catch (err) {
             console.error('Database query error', err);
@@ -106,6 +140,12 @@ const userController = {
         const { oauth_id } = req.body;
         // Log oauth_id for debugging
         console.log('oauth_id: ', oauth_id);
+        if (!oauth_id) {
+            res.status(400).json({ error: 'Missing required field: oauth_id' });
+        // Extract oauth_id from req.body
+        const { oauth_id } = req.body;
+        // Log oauth_id for debugging
+        console.log("oauth_id: ", oauth_id);
         if (!oauth_id) {
             res.status(400).json({ error: 'Missing required field: oauth_id' });
             return;
