@@ -9,6 +9,7 @@ import { auth } from "./utils/firebase";
 import AnonContainer from "./features/anontemplate/AnonContainer";
 import HomeContainer from "./features/home/HomeContainer";
 import BoardContainer from "./features/board/BoardContainer";
+import LeaderBoardContainer from "./features/leader-board/LeaderBoardContainer";
 
 const App = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -40,7 +41,7 @@ const App = () => {
             <Route path="/home" element={<HomeContainer />}>
               <Route
                 path="/home/leaderboard"
-                element={<div>Leader Board</div>}
+                element={<LeaderBoardContainer />}
               />
               <Route path="/home/myboard" element={<BoardContainer />} />
               <Route path="/home/settings" element={<div>Settings</div>} />
