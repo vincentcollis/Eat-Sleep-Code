@@ -3,8 +3,10 @@ const userController = {
     // Function to add a problem to the users board
     add_ProblemToBoard: async (req, res, next) => {
         console.log('User is adding a problem to their board ');
-        const user_id = res.locals.user_id;
-        const problem_id = req.body; // Assuming user_id and problem_id come from req.body
+        // const user_id = res.locals.user_id;
+        const user_id = 'ABCD1234'; // TEMPORARY
+        const { problem_id } = req.body; // Assuming user_id and problem_id come from req.body
+        console.log('user_id: ', user_id, 'problem_id: ', problem_id);
         if (!user_id || !problem_id) {
             res.status(400).json({ error: 'user_id and problem_id are required' });
             return;

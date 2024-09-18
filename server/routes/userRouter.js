@@ -2,7 +2,9 @@ import express from 'express';
 import userController from '../controllers/userController.js';
 import verifyToken from '../utils/verify.js';
 const userRouter = express.Router();
-userRouter.post('/add_ProblemToBoard', verifyToken, userController.add_ProblemToBoard, (req, res) => {
+userRouter.post('/add_ProblemToBoard', 
+// verifyToken,
+userController.add_ProblemToBoard, (req, res) => {
     console.log('user controller: ', req.user);
     res.status(200).send(res.locals.problems);
 });

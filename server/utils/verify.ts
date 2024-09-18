@@ -11,7 +11,7 @@ admin.initializeApp({
 });
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
-	console.log('HIT TOKEN');
+	console.log('Hit verifyToken');
 
 	const token = req.headers.authorization?.split(' ')[1];
 	if (!token) {

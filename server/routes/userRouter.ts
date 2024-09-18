@@ -8,7 +8,7 @@ const userRouter = express.Router();
 
 userRouter.post(
 	'/add_ProblemToBoard',
-	verifyToken,
+	// verifyToken,
 	userController.add_ProblemToBoard,
 	(req: Request, res: Response) => {
 		console.log('user controller: ', req.user);
