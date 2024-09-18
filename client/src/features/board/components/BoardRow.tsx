@@ -1,4 +1,3 @@
-import type React from 'react';
 import type { RowProps } from '../boardTypes';
 import { CheckCircleIcon, MinusCircleIcon } from '@heroicons/react/20/solid';
 

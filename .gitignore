@@ -137,3 +137,5 @@ dist
 .pnp.*
 
 serviceAccountKey.json
+
+.env

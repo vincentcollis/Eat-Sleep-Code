@@ -3,16 +3,21 @@ const userController = {
     // Function to add a problem to the users board
     add_ProblemToBoard: async (req, res, next) => {
         console.log('User is adding a problem to their board ');
+<<<<<<< HEAD
         // const user_id = res.locals.user_id;
         const user_id = 'ABCD1234'; // TEMPORARY
         const { problem_id } = req.body; // Assuming user_id and problem_id come from req.body
         console.log('user_id: ', user_id, 'problem_id: ', problem_id);
+=======
+        const user_id = res.locals.decodedToken.user_id;
+        const { problem_id } = req.body; // Assuming user_id and problem_id come from req.body
+>>>>>>> e626170039a65cc11e74d2048455b70063601be7
         if (!user_id || !problem_id) {
             res.status(400).json({ error: 'user_id and problem_id are required' });
             return;
         }
         const query = `
-      INSERT INTO users_problems (user_id, problem_id, completed, created_at)
+      INSERT INTO users_problems (users_id, problems_id, completed, completed_at)
       VALUES ($1, $2, false, NOW());
     `;
         try {
