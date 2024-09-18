@@ -13,7 +13,7 @@ const leaderBoardController = {
 			const query = `
         SELECT u.users_id, u.name, COUNT(up.id) as total_completions
         FROM users_problems up
-        JOIN users u ON up.user_id = u.id
+        JOIN users u ON up.users_id = u.id
         WHERE up.completed = true
         AND up.updated_at::date = CURRENT_DATE
         GROUP BY u.users_id, u.name
@@ -39,7 +39,7 @@ const leaderBoardController = {
 			const query = `
         SELECT u.users_id, u.name, COUNT(up.id) as total_completions
         FROM users_problems up
-        JOIN users u ON up.user_id = u.id
+        JOIN users u ON up.users_id = u.id
         WHERE up.completed = true
         AND up.updated_at >= date_trunc('week', CURRENT_DATE)
         AND up.updated_at < date_trunc('week', CURRENT_DATE) + interval '1 week'
@@ -66,7 +66,7 @@ const leaderBoardController = {
 			const query = `
         SELECT u.users_id, u.name, COUNT(up.id) as total_completions
         FROM users_problems up
-        JOIN users u ON up.user_id = u.id
+        JOIN users u ON up.users_id = u.id
         WHERE up.completed = true
         GROUP BY u.users_id, u.name
         ORDER BY total_completions DESC;
