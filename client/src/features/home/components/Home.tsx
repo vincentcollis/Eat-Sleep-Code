@@ -34,10 +34,6 @@ const navigation = [
   },
   { name: "My Board", href: "/home/myboard", icon: UsersIcon, current: false },
 ];
-const userNavigation = [
-  { name: "Your profile", href: "#" },
-  { name: "Sign out", href: "/settings" },
-];
 
 function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(" ");
@@ -195,8 +191,8 @@ const Home = () => {
                     </ul>
                   </li>
                   <li className="mt-auto">
-                    <a
-                      href="#"
+                    <Link
+                      to="/home/settings"
                       className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
                     >
                       <Cog6ToothIcon
@@ -204,7 +200,7 @@ const Home = () => {
                         className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
                       />
                       Settings
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </nav>
