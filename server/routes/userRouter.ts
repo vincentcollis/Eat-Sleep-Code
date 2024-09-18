@@ -7,6 +7,15 @@ import verifyToken from '../utils/verify.js';
 const userRouter = express.Router();
 
 userRouter.post(
+	'/create_user',
+	verifyToken,
+	userController.create_newUser,
+	(_req: Request, res: Response) => {
+		res.status(200).send(res.locals.problems);
+	}
+);
+
+userRouter.post(
 	'/add_ProblemToBoard',
 	verifyToken,
 	userController.add_ProblemToBoard,
@@ -16,9 +25,9 @@ userRouter.post(
 );
 
 userRouter.post(
-	'/update_ProblemCompletedStatus_IncrementByOne',
+	'/update_SetProblemToComplete',
 	verifyToken,
-	userController.update_ProblemCompletedStatus_IncrementByOne,
+	userController.update_SetProblemToComplete,
 	(_req: Request, res: Response) => {
 		res.status(200).send(res.locals.problems);
 	}

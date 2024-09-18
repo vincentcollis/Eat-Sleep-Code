@@ -3,105 +3,82 @@ import { Request, Response, NextFunction } from 'express';
 import pool from '../utils/db.js';
 
 const leaderBoardController = {
-	// - completed most alltime
-
-	//   - completed most daily
-	getMostCompletedDailyList: (
+	// - Completed most daily
+	getMostCompletedDailyList: async (
 		_req: Request,
 		res: Response,
 		next: NextFunction
-	): void => {
-		console.log('Most Completed Daily List');
+	): Promise<void> => {
+		try {
+			const query = `
+        SELECT u.users_id, u.name, COUNT(up.id) as total_completions
+        FROM users_problems up
+        JOIN users u ON up.user_id = u.id
+        WHERE up.completed = true
+        AND up.updated_at::date = CURRENT_DATE
+        GROUP BY u.users_id, u.name
+        ORDER BY total_completions DESC;
+      `;
 
-		// A function to query the database using the pool
-		const query = `
-			SELECT * FROM public.problems;
-		`;
-
-		async function getMostCompletedDailyListQuery(query: string) {
-			try {
-				const client = await pool.connect(); // Get a client from the pool
-				const result = await client.query(query);
-				client.release(); // Release the client back to the pool
-
-				res.locals.problems = result.rows;
-				// console.log(res.locals.problems);
-				next();
-				// return result.rows;
-			} catch (err) {
-				console.error('Database query error', err);
-				throw err;
-				next();
-			}
+			const result = await pool.query(query);
+			res.locals.dailyLeaderboard = result.rows;
+			next();
+		} catch (error) {
+			console.error('Error fetching daily leaderboard:', error);
+			res.status(500).json({ error: 'Failed to fetch daily leaderboard' });
 		}
-
-		getMostCompletedDailyListQuery(query);
 	},
 
-	// - completed most weekly
-	getMostCompletedWeeklyList: (
+	// - Completed most weekly (Sunday - Saturday)
+	getMostCompletedWeeklyList: async (
 		_req: Request,
 		res: Response,
 		next: NextFunction
-	): void => {
-		console.log('Most Completed Weekly List');
+	): Promise<void> => {
+		try {
+			const query = `
+        SELECT u.users_id, u.name, COUNT(up.id) as total_completions
+        FROM users_problems up
+        JOIN users u ON up.user_id = u.id
+        WHERE up.completed = true
+        AND up.updated_at >= date_trunc('week', CURRENT_DATE)
+        AND up.updated_at < date_trunc('week', CURRENT_DATE) + interval '1 week'
+        GROUP BY u.users_id, u.name
+        ORDER BY total_completions DESC;
+      `;
 
-		// A function to query the database using the pool
-		const query = `
-    SELECT * FROM public.problems;
-  `;
-
-		async function getMostCompletedWeeklyListQuery(query: string) {
-			try {
-				const client = await pool.connect(); // Get a client from the pool
-				const result = await client.query(query);
-				client.release(); // Release the client back to the pool
-
-				res.locals.problems = result.rows;
-				// console.log(res.locals.problems);
-				next();
-				// return result.rows;
-			} catch (err) {
-				console.error('Database query error', err);
-				throw err;
-				next();
-			}
+			const result = await pool.query(query);
+			res.locals.weeklyLeaderboard = result.rows;
+			next();
+		} catch (error) {
+			console.error('Error fetching weekly leaderboard:', error);
+			res.status(500).json({ error: 'Failed to fetch weekly leaderboard' });
 		}
-
-		getMostCompletedWeeklyListQuery(query);
 	},
 
-	// - completed most alltime
-	getMostCompletedAllTimeList: (
+	// - Completed most all-time
+	getMostCompletedAllTimeList: async (
 		_req: Request,
 		res: Response,
 		next: NextFunction
-	): void => {
-		console.log('Most Completed All Time List');
+	): Promise<void> => {
+		try {
+			const query = `
+        SELECT u.users_id, u.name, COUNT(up.id) as total_completions
+        FROM users_problems up
+        JOIN users u ON up.user_id = u.id
+        WHERE up.completed = true
+        GROUP BY u.users_id, u.name
+        ORDER BY total_completions DESC;
+      `;
 
-		// A function to query the database using the pool
-		const query = `
-			SELECT * FROM public.problems;
-		`;
-
-		async function getMostCompletedAllTimeListQuery(query: string) {
-			try {
-				const client = await pool.connect(); // Get a client from the pool
-				const result = await client.query(query);
-				client.release(); // Release the client back to the pool
-
-				res.locals.problems = result.rows;
-				// console.log(res.locals.problems);
-				next();
-				// return result.rows;
-			} catch (err) {
-				console.error('Database query error', err);
-				throw err;
-				next();
-			}
+			const result = await pool.query(query);
+			res.locals.allTimeLeaderboard = result.rows;
+			next();
+		} catch (error) {
+			console.error('Error fetching all-time leaderboard:', error);
+			res.status(500).json({ error: 'Failed to fetch all-time leaderboard' });
 		}
-
-		getMostCompletedAllTimeListQuery(query);
 	},
 };
 

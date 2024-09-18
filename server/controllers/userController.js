@@ -28,68 +28,83 @@ const userController = {
         }
     },
     // Function to update the completion status to a problem on the users board
-    update_ProblemCompletedStatus_IncrementByOne: async (req, res, next) => {
-        const { user_id, problem_id, instance_id } = req.body;
-        if (!user_id || !problem_id || !instance_id) {
+    update_SetProblemToComplete: async (req, res, next) => {
+        console.log('User is marking a problem as completed');
+        const user_id = res.locals.decodedToken.user_id;
+        const { problem_id } = req.body; // Expecting problem_id to be sent in the request body
+        if (!user_id || !problem_id) {
+            res.status(400).json({ error: 'user_id and problem_id are required' });
+            return;
+        }
+        const query = `
+      UPDATE users_problems
+      SET completed = true, completed_at = NOW()
+      WHERE users_id = $1 AND problems_id = $2;
+    `;
+        try {
+            const client = await pool.connect(); // Get a client from the pool
+            const result = await client.query(query, [user_id, problem_id]); // Parameterized query to avoid SQL injection
+            client.release(); // Release the client back to the pool
+            if (result.rowCount === 0) {
+                res
+                    .status(404)
+                    .json({ message: 'No problem found for this user to mark as complete' });
+                return;
+            }
+            // Respond with a success message or perform any other action
+            res
+                .status(200)
+                .json({ message: 'Problem marked as completed successfully' });
+        }
+        catch (err) {
+            console.error('Database query error', err);
+            res.status(500).json({ error: 'Failed to mark problem as completed' });
+        }
+    },
+    // Middleware to create a new user if they don't already exist based on users_id from GitHub OAuth
+    create_newUser: async (req, res, next) => {
+        const { users_id, name, email, github_url } = req.body; // Expecting user data to be in the request body
+        if (!users_id || !name || !email) {
             res
                 .status(400)
-                .json({ error: 'user_id, problem_id, and instance_id are required' });
+                .json({ error: 'Missing required fields: users_id, name, or email' });
             return;
         }
         try {
-            const client = await pool.connect(); // Get a client from the pool
-            // First, retrieve the current completed status for the specific instance (record)
-            const currentStatusQuery = `
-        SELECT completed 
-        FROM users_problems 
-        WHERE user_id = $1 AND problem_id = $2 AND id = $3;
+            // Connect to the database
+            const client = await pool.connect();
+            // Use INSERT ON CONFLICT to insert the user if they don't already exist
+            // Check for conflicts based on the users_id from GitHub OAuth
+            const query = `
+        INSERT INTO users (users_id, name, email, github_url)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (users_id) DO NOTHING
+        RETURNING *;
       `;
-            const currentStatusResult = await client.query(currentStatusQuery, [
-                user_id,
-                problem_id,
-                instance_id,
+            // Execute the query with user data (checking for conflicts on users_id)
+            const result = await client.query(query, [
+                users_id,
+                name,
+                email,
+                github_url,
             ]);
-            if (currentStatusResult.rowCount === 0) {
-                client.release();
-                res.status(404).json({ error: 'No problem instance found for the user' });
-                return;
-            }
-            const currentStatus = currentStatusResult.rows[0].completed;
-            // Toggle the status
-            const newStatus = !currentStatus;
-            // If the new status is true, increment the `times_completed`
-            let updateQuery;
-            if (newStatus) {
-                updateQuery = `
-          UPDATE users_problems 
-          SET completed = $1, times_completed = times_completed + 1, updated_at = NOW() 
-          WHERE user_id = $2 AND problem_id = $3 AND id = $4;
-        `;
+            client.release(); // Release the connection back to the pool
+            if (result.rows.length > 0) {
+                console.log('New user created:', result.rows[0]);
+                res.locals.newUser = result.rows[0]; // Storing new user data in res.locals for further use
             }
             else {
-                updateQuery = `
-          UPDATE users_problems 
-          SET completed = $1, updated_at = NOW() 
-          WHERE user_id = $2 AND problem_id = $3 AND id = $4;
-        `;
+                console.log('User already exists with users_id:', users_id);
+                // Fetch existing user if no new user was created
+                const existingUserQuery = 'SELECT * FROM users WHERE users_id = $1';
+                const existingUserResult = await pool.query(existingUserQuery, [users_id]);
+                res.locals.newUser = existingUserResult.rows[0]; // Store the existing user data
             }
-            // Execute the update query
-            await client.query(updateQuery, [
-                newStatus,
-                user_id,
-                problem_id,
-                instance_id,
-            ]);
-            client.release(); // Release the client back to the pool
-            // Respond with the new status
-            res.status(200).json({
-                message: 'Completed status updated successfully',
-                newStatus,
-            });
+            next(); // Proceed to the next middleware or route handler
         }
-        catch (err) {
-            console.error('Error updating completed status:', err);
-            res.status(500).json({ error: 'Failed to update problem status' });
+        catch (error) {
+            console.error('Error checking or creating user:', error);
+            res.status(500).json({ error: 'Failed to check or create user' });
         }
     },
 };
